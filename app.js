@@ -39,7 +39,7 @@ blogmodel.find({"emailid":req.body.emailid}).then(
                 console.log(dbpass)
                 bcrypt.compare(input.pass,dbpass,(error,isMatch)=>{
                     if (isMatch) {
-                        res.json({"status":"sucess","userid":response[0]._id})
+                        res.json({"status":"success","userid":response[0]._id})
                     } else {
                         res.json({"status":"incorrect password"})
                     }
