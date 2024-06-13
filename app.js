@@ -3,6 +3,7 @@ const mongoose=require("mongoose")
 const cors =require("cors")
 const app =express()
 const bcrypt = require("bcryptjs") //import encryption package
+const jwt =require("jsonwebtoken")//importing token library
 app.use(cors())
 app.use(express.json())
 
@@ -39,7 +40,15 @@ blogmodel.find({"emailid":req.body.emailid}).then(
                 console.log(dbpass)
                 bcrypt.compare(input.pass,dbpass,(error,isMatch)=>{
                     if (isMatch) {
-                        res.json({"status":"success","userid":response[0]._id})
+                        //if login success generate token
+                        jwt.sign({email:input.emailid},"blog-app",{expiresIn:"1d"},
+                            (error,token)=>{
+                            if (error) {
+                                res.json({"status":"unable to create token"})
+                            } else {
+                                res.json({"status":"success","userid":response[0]._id,"token":token})
+                            }
+                        })//blog-app is the name of the token
                     } else {
                         res.json({"status":"incorrect password"})
                     }
