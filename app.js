@@ -27,6 +27,31 @@ app.post("/signup",async(req,res)=>{
     res.json({"status":"SIGNUP"})
 })
 
+//login api - here we need async as the password is encrypted
+app.post("/login",(req,res)=>{
+let input =req.body
+//we are checking with mail id
+blogmodel.find({"emailid":req.body.emailid}).then(
+    (response)=>{
+        if(response.length>0)
+            {
+                let dbpass =response[0].pass
+                console.log(dbpass)
+                bcrypt.compare(input.pass,dbpass,(error,isMatch)=>{
+                    if (isMatch) {
+                        res.json({"status":"sucess","userid":response[0]._id})
+                    } else {
+                        res.json({"status":"incorrect password"})
+                    }
+                })
+            }
+        else{
+            res.json({"status":"user not found"})
+        }
+    }
+)
+})
+
 app.listen(8004,()=>{
     console.log("server started")
 })
